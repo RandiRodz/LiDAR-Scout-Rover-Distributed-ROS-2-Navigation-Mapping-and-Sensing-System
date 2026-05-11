@@ -6,8 +6,9 @@ This repository focuses on the rover software stack only:
 - Arduino Mega motor and gas sensor code
 - Raspberry Pi 5 bridge and sensor-side scripts
 - ROS 2 Jazzy workstation navigation, mapping, and visualization stack
+<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
+  
 
-The website/dashboard was moved to a separate repository and is intentionally not covered here.
 
 ## Overview
 
