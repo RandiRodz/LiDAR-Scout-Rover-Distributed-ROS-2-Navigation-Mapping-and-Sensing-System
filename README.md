@@ -11,6 +11,7 @@ This repository focuses on the rover software stack only:
 
 
 ## Overview
+<img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/85719687-1e01-47b6-9df6-9bb7ac7e8307" />
 
 LiDAR Scout Rover is a multi-computer robotics system designed to:
 - drive a tank-style rover with ROS 2 velocity commands
