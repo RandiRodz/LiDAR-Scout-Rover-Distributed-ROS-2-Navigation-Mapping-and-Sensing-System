@@ -1,0 +1,42 @@
+/**:
+  ros__parameters:
+    cloud_topic: /unilidar/cloud
+    imu_topic: /unilidar/imu
+    avoid_topic: cmd_vel_avoid
+    filtered_topic: /filtered_obstacles
+    marker_topic: /obstacle_markers
+    output_frame_id: base_link
+    sensor_offset_x: 0.0
+    sensor_offset_y: 0.0
+    sensor_offset_z: 0.124
+
+    use_imu_axis_hint: false
+    imu_timeout_sec: 0.25
+    publish_markers: true
+
+    leaf_size: 0.05
+    roi_x_min: 0.0
+    roi_x_max: 3.0
+    roi_y_min: -2.0
+    roi_y_max: 2.0
+    roi_z_min: -1.5
+    roi_z_max: 0.22
+
+    plane_distance_threshold: 0.08
+    plane_angle_tolerance_deg: 20.0
+    plane_max_iterations: 150
+
+    cluster_tolerance: 0.11
+    min_cluster_size: 5
+    max_cluster_size: 5000
+
+    danger_x_min: 0.18
+    danger_x_max: 0.38
+    danger_y_min: -0.16
+    danger_y_max: 0.16
+
+    avoid_linear_x: -0.12
+    avoid_angular_z: 1.20
+
+    verbose_diagnostics: true
+    diagnostics_period_ms: 1000

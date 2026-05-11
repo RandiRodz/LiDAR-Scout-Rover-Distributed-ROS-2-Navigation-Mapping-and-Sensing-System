@@ -1,0 +1,1770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LiDAR Scout Rover</title>
+<script src="https://cdn.jsdelivr.net/npm/roslib/build/roslib.min.js"></script>
+<style>
+:root{
+  --bg:#050505;
+  --panel:#111111;
+  --panel-2:#171717;
+  --line:#2b2b2b;
+  --line-strong:#434343;
+  --text:#f6f6f6;
+  --muted:#9f9f9f;
+  --soft:#d7d7d7;
+  --accent:#ffffff;
+  --danger:#ff6b6b;
+  --warn:#f5d36b;
+  --success:#cfcfcf;
+  --shadow:0 18px 44px rgba(0,0,0,0.28);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:"Space Grotesk","Avenir Next","Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 26%),
+    linear-gradient(180deg, #0a0a0a 0%, #040404 100%);
+  color:var(--text);
+  display:flex;
+  min-height:100vh;
+  overflow:hidden;
+}
+
+.sidebar{
+  width:230px;
+  background:rgba(6,6,6,0.96);
+  border-right:1px solid var(--line);
+  display:flex;
+  flex-direction:column;
+  flex-shrink:0;
+}
+
+.brand{
+  padding:22px 18px 18px;
+  border-bottom:1px solid var(--line);
+}
+
+.brand-title{
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.brand-sub{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:6px;
+}
+
+.nav{
+  padding:16px 0;
+  flex:1;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:12px 18px;
+  color:var(--muted);
+  border-left:2px solid transparent;
+  cursor:pointer;
+  transition:0.18s ease;
+}
+
+.nav-item:hover{
+  background:rgba(255,255,255,0.05);
+  color:var(--text);
+}
+
+.nav-item.active{
+  background:rgba(255,255,255,0.08);
+  border-left-color:var(--accent);
+  color:var(--text);
+}
+
+.nav-icon{
+  width:16px;
+  height:16px;
+  flex-shrink:0;
+}
+
+.sidebar-footer{
+  padding:18px;
+  border-top:1px solid var(--line);
+  font-size:11px;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+.main{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.topbar{
+  height:68px;
+  padding:0 24px;
+  border-bottom:1px solid var(--line);
+  background:rgba(10,10,10,0.92);
+  backdrop-filter:blur(14px);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+}
+
+.topbar-left{
+  min-width:0;
+}
+
+.topbar-title{
+  font-size:16px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.topbar-sub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.topbar-right{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  justify-content:flex-end;
+}
+
+.pill{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 12px;
+  border-radius:999px;
+  border:1px solid var(--line-strong);
+  background:rgba(255,255,255,0.04);
+  font-size:11px;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.pill-dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--muted);
+}
+
+.pill.online .pill-dot{background:var(--accent)}
+.pill.warn .pill-dot{background:var(--warn)}
+.pill.danger .pill-dot{background:var(--danger)}
+
+.content{
+  flex:1;
+  overflow-y:auto;
+  padding:24px;
+}
+
+.tab-page{display:none}
+.tab-page.active{display:block}
+
+.hero-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:18px;
+}
+
+.metric-card,
+.panel{
+  background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+  border:1px solid var(--line);
+  border-radius:20px;
+  box-shadow:var(--shadow);
+}
+
+.metric-card{
+  padding:18px 18px 16px;
+}
+
+.metric-label{
+  color:var(--muted);
+  font-size:11px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+
+.metric-value{
+  font-size:32px;
+  line-height:1.05;
+  margin-top:12px;
+  font-weight:700;
+}
+
+.metric-foot{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:10px;
+}
+
+.value.online{
+  color:var(--text);
+}
+
+.value.offline{
+  color:var(--danger);
+}
+
+.grid-2{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(360px,0.95fr);
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.grid-3{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+
+.panel{
+  padding:18px;
+}
+
+.panel-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:16px;
+  margin-bottom:16px;
+}
+
+.panel-title{
+  font-size:12px;
+  color:var(--muted);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+}
+
+.panel-sub{
+  font-size:12px;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.camera-shell{
+  position:relative;
+  overflow:hidden;
+  border-radius:18px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01)),
+    #090909;
+  border:1px solid var(--line);
+  min-height:400px;
+}
+
+.camera-shell::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(180deg, rgba(255,255,255,0.06), transparent 20%, transparent 80%, rgba(255,255,255,0.04));
+  pointer-events:none;
+}
+
+.camera-feed{
+  width:100%;
+  height:400px;
+  object-fit:cover;
+  display:block;
+  filter:contrast(1.04) saturate(1.08);
+}
+
+.camera-empty{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  color:var(--soft);
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 44%),
+    linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0));
+  text-align:center;
+  padding:24px;
+}
+
+.camera-empty svg{
+  opacity:0.85;
+}
+
+.camera-meta{
+  position:absolute;
+  top:14px;
+  left:14px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.chip{
+  font-size:11px;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(0,0,0,0.55);
+  color:var(--text);
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.canvas-shell{
+  position:relative;
+  height:340px;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid var(--line);
+  background:#101010;
+}
+
+.grid-paper{
+  position:absolute;
+  inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size:28px 28px;
+}
+
+.map-coords{
+  position:absolute;
+  right:14px;
+  bottom:14px;
+  font-size:12px;
+  color:var(--soft);
+  font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  padding:7px 10px;
+  border-radius:12px;
+  background:rgba(0,0,0,0.58);
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.controller-grid{
+  display:grid;
+  grid-template-columns:repeat(3,88px);
+  justify-content:center;
+  gap:10px;
+  margin-top:8px;
+}
+
+.control-btn{
+  height:88px;
+  border-radius:20px;
+  border:1px solid var(--line-strong);
+  background:linear-gradient(180deg, #191919, #0c0c0c);
+  color:var(--text);
+  font-size:26px;
+  cursor:pointer;
+  transition:0.12s ease;
+  user-select:none;
+}
+
+.control-btn:hover{
+  transform:translateY(-1px);
+  border-color:#707070;
+}
+
+.control-btn.active{
+  background:var(--accent);
+  color:#000;
+}
+
+.control-btn.stop{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+}
+
+.control-meta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:16px;
+}
+
+.control-tuning{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:16px;
+}
+
+.mini-stat{
+  padding:12px 14px;
+  border-radius:16px;
+  border:1px solid var(--line);
+  background:var(--panel-2);
+}
+
+.mini-label{
+  font-size:11px;
+  color:var(--muted);
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+}
+
+.mini-value{
+  margin-top:8px;
+  font-size:18px;
+  font-weight:700;
+}
+
+.range-card{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+.range-input{
+  width:100%;
+  accent-color:#ffffff;
+  cursor:pointer;
+}
+
+.range-ticks{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  color:var(--muted);
+  font-size:11px;
+  font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+
+.range-help{
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+.stepper{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+}
+
+.mini-btn{
+  height:40px;
+  border-radius:14px;
+  border:1px solid var(--line-strong);
+  background:linear-gradient(180deg, #191919, #0c0c0c);
+  color:var(--text);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.02em;
+  cursor:pointer;
+  transition:0.12s ease;
+}
+
+.mini-btn:hover{
+  transform:translateY(-1px);
+  border-color:#707070;
+}
+
+.data-list{
+  display:grid;
+  gap:10px;
+}
+
+.data-row{
+  display:flex;
+  justify-content:space-between;
+  gap:16px;
+  padding:12px 0;
+  border-top:1px solid var(--line);
+  font-size:13px;
+}
+
+.data-row:first-child{
+  border-top:none;
+  padding-top:0;
+}
+
+.data-key{
+  color:var(--muted);
+}
+
+.data-val{
+  color:var(--text);
+  font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  text-align:right;
+}
+
+.status-stack{
+  display:grid;
+  gap:12px;
+}
+
+.mode-card{
+  border:1px solid var(--line);
+  border-radius:18px;
+  padding:16px;
+  background:var(--panel-2);
+  transition:0.18s ease;
+}
+
+.mode-card.active{
+  border-color:var(--accent);
+  box-shadow:0 0 0 1px rgba(255,255,255,0.1) inset;
+}
+
+.mode-name{
+  font-size:14px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-transform:uppercase;
+}
+
+.mode-desc{
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.5;
+}
+
+.topic-groups{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+}
+
+.topic-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto auto;
+  gap:10px;
+  align-items:center;
+  padding:11px 0;
+  border-top:1px solid var(--line);
+  font-size:12px;
+}
+
+.topic-row:first-child{
+  border-top:none;
+  padding-top:0;
+}
+
+.topic-name{
+  font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+  color:var(--text);
+  overflow-wrap:anywhere;
+}
+
+.topic-type,
+.topic-rate{
+  color:var(--muted);
+  white-space:nowrap;
+}
+
+.topic-rate.live{
+  color:var(--text);
+}
+
+.section-title{
+  font-size:20px;
+  font-weight:700;
+  letter-spacing:0.03em;
+  margin-bottom:16px;
+}
+
+.help-text{
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.7;
+}
+
+.mono{
+  font-family:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;
+}
+
+.topic-group-title{
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+.footer-note{
+  margin-top:14px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.6;
+}
+
+canvas{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+.content::-webkit-scrollbar{width:6px}
+.content::-webkit-scrollbar-track{background:transparent}
+.content::-webkit-scrollbar-thumb{background:#2b2b2b;border-radius:999px}
+
+@media (max-width: 1280px){
+  .hero-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid-2,.topic-groups{grid-template-columns:1fr}
+  .grid-3{grid-template-columns:1fr}
+}
+
+@media (max-width: 900px){
+  body{flex-direction:column}
+  .sidebar{width:100%;border-right:none;border-bottom:1px solid var(--line)}
+  .nav{display:flex;overflow:auto;padding:10px}
+  .nav-item{border-left:none;border-bottom:2px solid transparent;white-space:nowrap}
+  .nav-item.active{border-bottom-color:var(--accent)}
+  .topbar{height:auto;padding:16px;align-items:flex-start;flex-direction:column}
+  .hero-grid{grid-template-columns:1fr}
+  .controller-grid{grid-template-columns:repeat(3,1fr)}
+  .control-tuning{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-title">LiDAR Scout Rover</div>
+      <div class="brand-sub">LSR · ROS 2 Jazzy · Nav2 + Point-LIO</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" data-tab="overview">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 6.5L8 2l6 4.5V14H10v-4H6v4H2z"/></svg>
+        Overview
+      </div>
+      <div class="nav-item" data-tab="stack">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="3"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.2 3.2l1.4 1.4M11.4 11.4l1.4 1.4M11.4 3.2l-1.4 1.4M4.6 11.4l-1.4 1.4"/></svg>
+        Stack
+      </div>
+      <div class="nav-item" data-tab="navigation">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l2 10-2-2-2 2z"/><circle cx="8" cy="8" r="6"/></svg>
+        Navigation
+      </div>
+      <div class="nav-item" data-tab="control">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8h10M8 3v10"/><rect x="1" y="1" width="14" height="14" rx="3"/></svg>
+        Controller
+      </div>
+      <div class="nav-item" data-tab="topics">
+        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg>
+        Topics
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="mono" id="rosbridge-target">ws://localhost:9090</div>
+      <div id="camera-target">camera: /image_raw via /image_raw/compressed</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="view-title">Overview</div>
+        <div class="topbar-sub" id="view-subtitle">Real-time rover telemetry, camera, and manual control.</div>
+      </div>
+      <div class="topbar-right">
+        <div class="pill" id="ros-pill"><span class="pill-dot"></span><span id="ros-pill-text">ROS bridge offline</span></div>
+        <div class="pill" id="camera-pill"><span class="pill-dot"></span><span id="camera-pill-text">Camera waiting</span></div>
+        <div class="pill" id="mode-pill"><span class="pill-dot"></span><span id="mode-pill-text">Mode idle</span></div>
+      </div>
+    </header>
+
+    <div class="content">
+      <section class="tab-page active" id="tab-overview">
+        <div class="hero-grid">
+          <div class="metric-card">
+            <div class="metric-label">ROS bridge</div>
+            <div class="metric-value" id="metric-ros">Offline</div>
+            <div class="metric-foot" id="metric-ros-sub">Waiting for rosbridge websocket</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Control source</div>
+            <div class="metric-value" id="metric-mode">Idle</div>
+            <div class="metric-foot" id="metric-mode-sub">No recent cmd_vel publisher</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Goal distance</div>
+            <div class="metric-value" id="metric-goal">—</div>
+            <div class="metric-foot" id="metric-goal-sub">No active Nav2 path</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Obstacle markers</div>
+            <div class="metric-value" id="metric-obstacles">0</div>
+            <div class="metric-foot" id="metric-obstacles-sub">Watching /obstacle_markers</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Gas Sensor</div>
+            <div class="metric-value" id="gas_val">—</div>
+            <div class="metric-foot value online" id="gas_status">waiting on /gas_raw</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Camera Screen</div>
+                <div class="panel-sub">Base topic: <span class="mono">/image_raw</span> with browser video from <span class="mono">/image_raw/compressed</span></div>
+              </div>
+            </div>
+            <div class="camera-shell">
+              <img id="camera-feed" class="camera-feed" alt="Camera feed">
+              <div class="camera-empty" id="camera-empty">
+                <svg width="68" height="68" viewBox="0 0 68 68" fill="none" stroke="currentColor" stroke-width="1.4">
+                  <rect x="10" y="18" width="48" height="32" rx="8"></rect>
+                  <path d="M26 18l4-6h8l4 6"></path>
+                  <circle cx="34" cy="34" r="10"></circle>
+                </svg>
+                <div>
+                  <div style="font-size:16px;font-weight:700;letter-spacing:0.04em;text-transform:uppercase">Camera waiting</div>
+                  <div style="margin-top:6px;font-size:12px;color:var(--muted)">Waiting for <span class="mono">/image_raw/compressed</span> through rosbridge, or optionally <span class="mono">web_video_server</span>.</div>
+                </div>
+              </div>
+              <div class="camera-meta">
+                <div class="chip" id="camera-chip">No stream</div>
+                <div class="chip mono" id="camera-topic-chip">/image_raw -> /image_raw/compressed</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Controller</div>
+                <div class="panel-sub">Publishes manual teleop to <span class="mono">/cmd_vel_teleop</span> when rosbridge is connected.</div>
+              </div>
+            </div>
+
+            <div class="controller-grid">
+              <div></div>
+              <button class="control-btn" data-control="forward" aria-label="Forward">↑</button>
+              <div></div>
+              <button class="control-btn" data-control="left" aria-label="Left">←</button>
+              <button class="control-btn stop" data-control="stop" aria-label="Stop">Stop</button>
+              <button class="control-btn" data-control="right" aria-label="Right">→</button>
+              <div></div>
+              <button class="control-btn" data-control="backward" aria-label="Backward">↓</button>
+              <div></div>
+            </div>
+
+            <div class="control-tuning">
+              <div class="mini-stat range-card">
+                <div>
+                  <div class="mini-label">Throttle</div>
+                  <div class="mini-value" id="manual-linear">0.45 m/s</div>
+                </div>
+                <input class="range-input" id="throttle-slider" type="range" min="0.10" max="0.80" step="0.05" value="0.45" aria-label="Throttle slider">
+                <div class="range-ticks">
+                  <span>0.10</span>
+                  <span>0.45</span>
+                  <span>0.80 m/s</span>
+                </div>
+                <div class="range-help">Sets the manual forward and reverse teleop speed for the on-page controller.</div>
+              </div>
+              <div class="mini-stat range-card">
+                <div>
+                  <div class="mini-label">Angular speed</div>
+                  <div class="mini-value" id="manual-angular">0.90 rad/s</div>
+                </div>
+                <div class="stepper">
+                  <button class="mini-btn" id="angular-down" type="button" aria-label="Decrease angular speed">- 0.10</button>
+                  <button class="mini-btn" id="angular-reset" type="button" aria-label="Reset angular speed">Reset</button>
+                  <button class="mini-btn" id="angular-up" type="button" aria-label="Increase angular speed">+ 0.10</button>
+                </div>
+                <div class="range-help">Adjusts the turning rate used by the left/right buttons and the A / D keyboard shortcuts.</div>
+              </div>
+            </div>
+
+            <div class="footer-note">
+              Keyboard shortcuts are enabled too: <span class="mono">W A S D</span> and <span class="mono">Space</span>.
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Local Navigation View</div>
+                <div class="panel-sub">Robot-centered view from <span class="mono">base_link</span> using the local plan, obstacle markers, and active safety zones.</div>
+              </div>
+            </div>
+            <div class="canvas-shell">
+              <div class="grid-paper"></div>
+              <canvas id="local-nav-canvas" width="860" height="340"></canvas>
+              <div class="map-coords" id="map-coords">base_link centered  |  yaw: 0.0°  |  local plan: 0 poses</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Live Commands</div>
+                <div class="panel-sub">Current output on <span class="mono">/cmd_vel</span> and planner state.</div>
+              </div>
+            </div>
+            <div class="data-list">
+              <div class="data-row"><span class="data-key">Linear X</span><span class="data-val" id="cmd-linear">0.00 m/s</span></div>
+              <div class="data-row"><span class="data-key">Angular Z</span><span class="data-val" id="cmd-angular">0.00 rad/s</span></div>
+              <div class="data-row"><span class="data-key">Pose X</span><span class="data-val" id="pose-x">0.00 m</span></div>
+              <div class="data-row"><span class="data-key">Pose Y</span><span class="data-val" id="pose-y">0.00 m</span></div>
+              <div class="data-row"><span class="data-key">Yaw</span><span class="data-val" id="pose-yaw">0.0°</span></div>
+              <div class="data-row"><span class="data-key">Global plan length</span><span class="data-val" id="plan-poses">0 poses</span></div>
+              <div class="data-row"><span class="data-key">Gas raw</span><span class="data-val" id="gas-log">—</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-page" id="tab-stack">
+        <div class="section-title">Rover Stack</div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Runtime Components</div>
+                <div class="panel-sub">Updated for the current LSR bringup.</div>
+              </div>
+            </div>
+            <table class="data-list" style="width:100%">
+              <tbody>
+                <tr class="data-row"><td class="data-key">Unitree LiDAR</td><td class="data-val mono">/unilidar/cloud</td></tr>
+                <tr class="data-row"><td class="data-key">Restamp bridge</td><td class="data-val mono">/unilidar/cloud_restamped</td></tr>
+                <tr class="data-row"><td class="data-key">Point-LIO odometry</td><td class="data-val mono">/odom_corrected -> /odom</td></tr>
+                <tr class="data-row"><td class="data-key">Proximity guard</td><td class="data-val mono">/filtered_obstacles · /obstacle_markers</td></tr>
+                <tr class="data-row"><td class="data-key">Nav2 planner/controller</td><td class="data-val mono">/plan · /local_plan</td></tr>
+                <tr class="data-row"><td class="data-key">Velocity mux</td><td class="data-val mono">/cmd_vel_nav · /cmd_vel_avoid · /cmd_vel_teleop</td></tr>
+                <tr class="data-row"><td class="data-key">Final motor command</td><td class="data-val mono">/cmd_vel</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Vehicle Geometry</div>
+                <div class="panel-sub">Current dashboard copy aligned to your latest rover dimensions.</div>
+              </div>
+            </div>
+            <div class="data-list">
+              <div class="data-row"><span class="data-key">Length</span><span class="data-val">0.303 m</span></div>
+              <div class="data-row"><span class="data-key">Width</span><span class="data-val">0.235 m</span></div>
+              <div class="data-row"><span class="data-key">Height</span><span class="data-val">0.124 m</span></div>
+              <div class="data-row"><span class="data-key">LiDAR mount</span><span class="data-val">center top</span></div>
+              <div class="data-row"><span class="data-key">LiDAR TF Z</span><span class="data-val">0.124 m</span></div>
+              <div class="data-row"><span class="data-key">Danger zone</span><span class="data-val mono">x 0.18..0.38 · y -0.16..0.16</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Connection Notes</div>
+              <div class="panel-sub">This page is connection-ready, but it expects a couple of services to be running on the rover host.</div>
+            </div>
+          </div>
+          <div class="help-text">
+            <div><span class="mono">rosbridge_server</span> is needed for topic telemetry and the on-page controller.</div>
+            <div>The rover bringup should already be bridging Point-LIO odometry into <span class="mono">/odom</span>, typically from <span class="mono">/odom_corrected</span>, before Nav2 and this dashboard come online.</div>
+            <div>The camera panel prefers <span class="mono">/image_raw/compressed</span> through rosbridge, while <span class="mono">web_video_server</span> remains an optional fallback on the same host.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-page" id="tab-navigation">
+        <div class="section-title">Navigation</div>
+        <div class="grid-3">
+          <div class="metric-card">
+            <div class="metric-label">Pose X</div>
+            <div class="metric-value" id="nav-x">0.00 m</div>
+            <div class="metric-foot">from <span class="mono">/odom</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Pose Y</div>
+            <div class="metric-value" id="nav-y">0.00 m</div>
+            <div class="metric-foot">from <span class="mono">/odom</span></div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Yaw</div>
+            <div class="metric-value" id="nav-yaw">0.0°</div>
+            <div class="metric-foot">derived from quaternion</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Plan State</div>
+                <div class="panel-sub">Live path summaries instead of example goal inputs.</div>
+              </div>
+            </div>
+            <div class="data-list">
+              <div class="data-row"><span class="data-key">Global plan</span><span class="data-val" id="nav-global-plan">waiting</span></div>
+              <div class="data-row"><span class="data-key">Local plan</span><span class="data-val" id="nav-local-plan">waiting</span></div>
+              <div class="data-row"><span class="data-key">Goal distance</span><span class="data-val" id="nav-goal-distance">—</span></div>
+              <div class="data-row"><span class="data-key">Control source</span><span class="data-val" id="nav-source">idle</span></div>
+              <div class="data-row"><span class="data-key">Teleop throttle</span><span class="data-val" id="nav-teleop-linear">0.45 m/s</span></div>
+              <div class="data-row"><span class="data-key">Teleop turn</span><span class="data-val" id="nav-teleop-angular">0.90 rad/s</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Current Limits</div>
+                <div class="panel-sub">Frontend display for the rover’s present tuning.</div>
+              </div>
+            </div>
+            <div class="data-list">
+              <div class="data-row"><span class="data-key">Cruise target</span><span class="data-val">0.45 m/s</span></div>
+              <div class="data-row"><span class="data-key">Avoid reverse</span><span class="data-val">-0.12 m/s</span></div>
+              <div class="data-row"><span class="data-key">Avoid turn</span><span class="data-val">1.20 rad/s</span></div>
+              <div class="data-row"><span class="data-key">Teleop linear</span><span class="data-val" id="limit-teleop-linear">0.45 m/s</span></div>
+              <div class="data-row"><span class="data-key">Teleop angular</span><span class="data-val" id="limit-teleop-angular">0.90 rad/s</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-page" id="tab-control">
+        <div class="section-title">Control Modes</div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Mode State</div>
+                <div class="panel-sub">Highlighted from the most recent command source seen on the rover.</div>
+              </div>
+            </div>
+            <div class="status-stack">
+              <div class="mode-card" id="mode-navigation-card">
+                <div class="mode-name">Navigation</div>
+                <div class="mode-desc">Nav2 is actively driving through <span class="mono">/cmd_vel_nav</span>.</div>
+              </div>
+              <div class="mode-card" id="mode-avoidance-card">
+                <div class="mode-name">Avoidance</div>
+                <div class="mode-desc">The proximity guard is overriding with <span class="mono">/cmd_vel_avoid</span>.</div>
+              </div>
+              <div class="mode-card" id="mode-manual-card">
+                <div class="mode-name">Manual</div>
+                <div class="mode-desc">The dashboard controller is publishing to <span class="mono">/cmd_vel_teleop</span>.</div>
+              </div>
+              <div class="mode-card" id="mode-idle-card">
+                <div class="mode-name">Idle</div>
+                <div class="mode-desc">No recent velocity source is active.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">How It Connects</div>
+                <div class="panel-sub">No more example input blocks. This is wired around your real rover topics.</div>
+              </div>
+            </div>
+            <div class="help-text">
+              <div><span class="mono">/cmd_vel_nav</span> is treated as autonomous driving.</div>
+              <div><span class="mono">/cmd_vel_avoid</span> is treated as safety override.</div>
+              <div><span class="mono">/cmd_vel_teleop</span> is the controller topic this page publishes.</div>
+              <div><span class="mono">/cmd_vel</span> is the final muxed output the rover motor bridge should consume.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-page" id="tab-topics">
+        <div class="section-title">ROS 2 Topics</div>
+        <div class="topic-groups">
+          <div class="panel">
+            <div class="topic-group-title">Perception</div>
+            <div class="topic-row"><span class="topic-name">/unilidar/cloud</span><span class="topic-type">PointCloud2</span><span class="topic-rate" id="rate-/unilidar/cloud">—</span></div>
+            <div class="topic-row"><span class="topic-name">/unilidar/cloud_restamped</span><span class="topic-type">PointCloud2</span><span class="topic-rate" id="rate-/unilidar/cloud_restamped">—</span></div>
+            <div class="topic-row"><span class="topic-name">/unilidar/imu</span><span class="topic-type">Imu</span><span class="topic-rate" id="rate-/unilidar/imu">—</span></div>
+            <div class="topic-row"><span class="topic-name">/unilidar/imu_restamped</span><span class="topic-type">Imu</span><span class="topic-rate" id="rate-/unilidar/imu_restamped">—</span></div>
+            <div class="topic-row"><span class="topic-name">/filtered_obstacles</span><span class="topic-type">PointCloud2</span><span class="topic-rate" id="rate-/filtered_obstacles">—</span></div>
+            <div class="topic-row"><span class="topic-name">/obstacle_markers</span><span class="topic-type">MarkerArray</span><span class="topic-rate" id="rate-/obstacle_markers">—</span></div>
+            <div class="topic-row"><span class="topic-name">/gas_raw</span><span class="topic-type">Int32</span><span class="topic-rate" id="rate-/gas_raw">—</span></div>
+          </div>
+
+          <div class="panel">
+            <div class="topic-group-title">Navigation</div>
+            <div class="topic-row"><span class="topic-name">/odom</span><span class="topic-type">Odometry</span><span class="topic-rate" id="rate-/odom">—</span></div>
+            <div class="topic-row"><span class="topic-name">/plan</span><span class="topic-type">Path</span><span class="topic-rate" id="rate-/plan">—</span></div>
+            <div class="topic-row"><span class="topic-name">/local_plan</span><span class="topic-type">Path</span><span class="topic-rate" id="rate-/local_plan">—</span></div>
+            <div class="topic-row"><span class="topic-name">/tf</span><span class="topic-type">TFMessage</span><span class="topic-rate" id="rate-/tf">—</span></div>
+            <div class="topic-row"><span class="topic-name">/tf_static</span><span class="topic-type">TFMessage</span><span class="topic-rate" id="rate-/tf_static">—</span></div>
+            <div class="topic-row"><span class="topic-name">/navigate_to_pose/_action/status</span><span class="topic-type">GoalStatusArray</span><span class="topic-rate" id="rate-/navigate_to_pose/_action/status">—</span></div>
+          </div>
+
+          <div class="panel">
+            <div class="topic-group-title">Control</div>
+            <div class="topic-row"><span class="topic-name">/cmd_vel_nav</span><span class="topic-type">Twist</span><span class="topic-rate" id="rate-/cmd_vel_nav">—</span></div>
+            <div class="topic-row"><span class="topic-name">/cmd_vel_avoid</span><span class="topic-type">Twist</span><span class="topic-rate" id="rate-/cmd_vel_avoid">—</span></div>
+            <div class="topic-row"><span class="topic-name">/cmd_vel_teleop</span><span class="topic-type">Twist</span><span class="topic-rate" id="rate-/cmd_vel_teleop">—</span></div>
+            <div class="topic-row"><span class="topic-name">/cmd_vel</span><span class="topic-type">Twist</span><span class="topic-rate" id="rate-/cmd_vel">—</span></div>
+            <div class="topic-row"><span class="topic-name">/image_raw</span><span class="topic-type">Image</span><span class="topic-rate" id="rate-/image_raw">stream</span></div>
+            <div class="topic-row"><span class="topic-name">/image_raw/compressed</span><span class="topic-type">CompressedImage</span><span class="topic-rate" id="rate-/image_raw/compressed">—</span></div>
+            <div class="topic-row"><span class="topic-name">/camera_info</span><span class="topic-type">CameraInfo</span><span class="topic-rate" id="rate-/camera_info">—</span></div>
+          </div>
+        </div>
+
+        <div class="panel" style="margin-top:18px">
+          <div class="panel-head">
+            <div>
+              <div class="panel-title">Connection Summary</div>
+              <div class="panel-sub">This page is aligned with the current LSR runtime using Point-LIO, Nav2, and the custom proximity guard.</div>
+            </div>
+          </div>
+          <div class="help-text">
+            <div>The topic list above follows the rover bringup you have been testing: restamped LiDAR, Point-LIO odometry bridged into <span class="mono">/odom</span>, Nav2 plan topics, proximity guard markers, and muxed velocity commands.</div>
+            <div>If you later move to RTAB-Map or SLAM Toolbox, we can add a dedicated mapping tab and a real <span class="mono">/map</span> section without changing the controller or camera panels.</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+<script>
+const CONFIG = {
+  host: window.location.hostname || "localhost",
+  rosbridgePort: 9090,
+  webVideoPort: 8080,
+  cameraTopic: "/image_raw",
+  cameraCompressedTopic: "/image_raw/compressed",
+  teleopTopic: "/cmd_vel_teleop",
+  maxLinear: 0.45,
+  maxAngular: 0.90
+};
+
+const TELEOP_LIMITS = {
+  linearMin: 0.10,
+  linearMax: 0.80,
+  linearStep: 0.05,
+  angularMin: 0.40,
+  angularMax: 1.60,
+  angularStep: 0.10,
+  angularDefault: 0.90
+};
+
+const VIEW_META = {
+  overview: {
+    title: "Overview",
+    subtitle: "Live camera, rover pose, command stream, and on-page teleop."
+  },
+  stack: {
+    title: "Stack",
+    subtitle: "Current LSR runtime components and connection assumptions."
+  },
+  navigation: {
+    title: "Navigation",
+    subtitle: "Robot-centered Nav2 path state, obstacle geometry, and active safety zones."
+  },
+  control: {
+    title: "Controller",
+    subtitle: "Manual teleop plus current command-source mode detection."
+  },
+  topics: {
+    title: "ROS 2 Topics",
+    subtitle: "Real rover topics, updated from your current bringup."
+  }
+};
+
+const ROSBRIDGE_URL = `ws://${CONFIG.host}:${CONFIG.rosbridgePort}`;
+const CAMERA_STREAM_URL = `http://${CONFIG.host}:${CONFIG.webVideoPort}/stream?topic=${encodeURIComponent(CONFIG.cameraTopic)}`;
+
+const state = {
+  connected: false,
+  cameraOnline: false,
+  pose: {x: 0, y: 0, yawDeg: 0},
+  cmd: {linear: 0, angular: 0},
+  planPoses: 0,
+  localPlanPoses: 0,
+  localPlan: [],
+  goalDistance: null,
+  obstacleMarkers: 0,
+  clusterBoxes: [],
+  dangerZone: null,
+  gasRaw: null,
+  activeSource: "idle",
+  lastMessages: {
+    nav: 0,
+    avoid: 0,
+    teleop: 0,
+    final: 0
+  }
+};
+
+const ROBOT_FOOTPRINT = [
+  {x: 0.17, y: 0.13},
+  {x: 0.17, y: -0.13},
+  {x: -0.17, y: -0.13},
+  {x: -0.17, y: 0.13}
+];
+
+const STOP_ZONE = {minX: 0.18, maxX: 0.22, minY: -0.17, maxY: 0.17};
+const SLOW_ZONE = {minX: 0.22, maxX: 0.36, minY: -0.18, maxY: 0.18};
+const LOCAL_VIEW_SCALE = 82;
+
+const rateState = {};
+let ros = null;
+let teleopPublisher = null;
+let publishTimer = null;
+let activeControl = null;
+
+function $(id) {
+  return document.getElementById(id);
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function toDegreesFromQuaternion(q) {
+  const siny = 2 * (q.w * q.z + q.x * q.y);
+  const cosy = 1 - 2 * (q.y * q.y + q.z * q.z);
+  return Math.atan2(siny, cosy) * 180 / Math.PI;
+}
+
+function trackRate(topicName) {
+  if (!rateState[topicName]) {
+    rateState[topicName] = {count: 0, hz: 0, lastSeen: 0};
+  }
+  rateState[topicName].count += 1;
+  rateState[topicName].lastSeen = Date.now();
+}
+
+function refreshTopicRates() {
+  Object.entries(rateState).forEach(([topicName, info]) => {
+    info.hz = info.count;
+    info.count = 0;
+    const el = document.getElementById(`rate-${topicName}`);
+    if (!el) return;
+    const age = Date.now() - info.lastSeen;
+    if (age > 3000) {
+      el.textContent = "waiting";
+      el.classList.remove("live");
+    } else {
+      el.textContent = `${info.hz.toFixed(1)} Hz`;
+      el.classList.add("live");
+    }
+  });
+}
+
+function setPill(el, textEl, text, level) {
+  el.classList.remove("online", "warn", "danger");
+  if (level) el.classList.add(level);
+  textEl.textContent = text;
+}
+
+function setActiveMode(mode) {
+  state.activeSource = mode;
+  $("mode-navigation-card").classList.toggle("active", mode === "navigation");
+  $("mode-avoidance-card").classList.toggle("active", mode === "avoidance");
+  $("mode-manual-card").classList.toggle("active", mode === "manual");
+  $("mode-idle-card").classList.toggle("active", mode === "idle");
+
+  const label = mode === "navigation" ? "Mode navigation" :
+    mode === "avoidance" ? "Mode avoidance" :
+    mode === "manual" ? "Mode manual" :
+    "Mode idle";
+
+  const level = mode === "avoidance" ? "danger" :
+    mode === "idle" ? "warn" : "online";
+
+  setPill($("mode-pill"), $("mode-pill-text"), label, level);
+  $("metric-mode").textContent = mode.charAt(0).toUpperCase() + mode.slice(1);
+  $("metric-mode-sub").textContent =
+    mode === "navigation" ? "Nav2 is driving the rover" :
+    mode === "avoidance" ? "Proximity guard is overriding Nav2" :
+    mode === "manual" ? "Dashboard teleop is active" :
+    "No recent velocity publisher";
+  $("nav-source").textContent = mode;
+}
+
+function updateModeFromTimestamps() {
+  const now = Date.now();
+  if (now - state.lastMessages.avoid < 500) {
+    setActiveMode("avoidance");
+  } else if (now - state.lastMessages.teleop < 700) {
+    setActiveMode("manual");
+  } else if (now - state.lastMessages.nav < 700) {
+    setActiveMode("navigation");
+  } else {
+    setActiveMode("idle");
+  }
+}
+
+function updateUi() {
+  $("pose-x").textContent = `${state.pose.x.toFixed(2)} m`;
+  $("pose-y").textContent = `${state.pose.y.toFixed(2)} m`;
+  $("pose-yaw").textContent = `${state.pose.yawDeg.toFixed(1)}°`;
+  $("map-coords").textContent = `base_link centered  |  yaw: ${state.pose.yawDeg.toFixed(1)}°  |  local plan: ${state.localPlanPoses} poses`;
+  $("cmd-linear").textContent = `${state.cmd.linear.toFixed(2)} m/s`;
+  $("cmd-angular").textContent = `${state.cmd.angular.toFixed(2)} rad/s`;
+  $("nav-x").textContent = `${state.pose.x.toFixed(2)} m`;
+  $("nav-y").textContent = `${state.pose.y.toFixed(2)} m`;
+  $("nav-yaw").textContent = `${state.pose.yawDeg.toFixed(1)}°`;
+  $("plan-poses").textContent = `${state.planPoses} poses`;
+  $("metric-obstacles").textContent = String(state.obstacleMarkers);
+  $("metric-obstacles-sub").textContent = state.obstacleMarkers > 0 ? "Obstacle clusters are visible" : "No cluster markers right now";
+  $("gas-log").textContent = state.gasRaw === null ? "—" : String(state.gasRaw);
+
+  if (state.goalDistance === null) {
+    $("metric-goal").textContent = "—";
+    $("metric-goal-sub").textContent = "No active Nav2 path";
+    $("nav-goal-distance").textContent = "—";
+    $("nav-global-plan").textContent = "waiting";
+  } else {
+    $("metric-goal").textContent = `${state.goalDistance.toFixed(2)} m`;
+    $("metric-goal-sub").textContent = "Distance to last global plan pose";
+    $("nav-goal-distance").textContent = `${state.goalDistance.toFixed(2)} m`;
+    $("nav-global-plan").textContent = `${state.planPoses} poses`;
+  }
+
+  $("nav-local-plan").textContent = state.localPlanPoses > 0 ? `${state.localPlanPoses} poses` : "waiting";
+  $("metric-ros").textContent = state.connected ? "Connected" : "Offline";
+  $("metric-ros-sub").textContent = state.connected ? ROSBRIDGE_URL : "Waiting for rosbridge websocket";
+}
+
+function updateTeleopIndicators() {
+  $("manual-linear").textContent = `${CONFIG.maxLinear.toFixed(2)} m/s`;
+  $("manual-angular").textContent = `${CONFIG.maxAngular.toFixed(2)} rad/s`;
+  $("nav-teleop-linear").textContent = `${CONFIG.maxLinear.toFixed(2)} m/s`;
+  $("nav-teleop-angular").textContent = `${CONFIG.maxAngular.toFixed(2)} rad/s`;
+  $("limit-teleop-linear").textContent = `${CONFIG.maxLinear.toFixed(2)} m/s`;
+  $("limit-teleop-angular").textContent = `${CONFIG.maxAngular.toFixed(2)} rad/s`;
+  $("throttle-slider").value = CONFIG.maxLinear.toFixed(2);
+}
+
+function getControlCommand(controlName) {
+  let linear = 0;
+  let angular = 0;
+  if (controlName === "forward") linear = CONFIG.maxLinear;
+  if (controlName === "backward") linear = -CONFIG.maxLinear;
+  if (controlName === "left") angular = CONFIG.maxAngular;
+  if (controlName === "right") angular = -CONFIG.maxAngular;
+  return {linear, angular};
+}
+
+function refreshActiveTeleop() {
+  if (!activeControl || activeControl === "stop") return;
+  const {linear, angular} = getControlCommand(activeControl);
+  publishTeleop(linear, angular);
+}
+
+function setTeleopLinear(value) {
+  CONFIG.maxLinear = clamp(value, TELEOP_LIMITS.linearMin, TELEOP_LIMITS.linearMax);
+  updateTeleopIndicators();
+  refreshActiveTeleop();
+}
+
+function setTeleopAngular(value) {
+  CONFIG.maxAngular = clamp(value, TELEOP_LIMITS.angularMin, TELEOP_LIMITS.angularMax);
+  updateTeleopIndicators();
+  refreshActiveTeleop();
+}
+
+function worldToRobotFrame(point) {
+  const yawRad = state.pose.yawDeg * Math.PI / 180;
+  const dx = point.x - state.pose.x;
+  const dy = point.y - state.pose.y;
+  return {
+    x: (Math.cos(yawRad) * dx) + (Math.sin(yawRad) * dy),
+    y: (-Math.sin(yawRad) * dx) + (Math.cos(yawRad) * dy)
+  };
+}
+
+function localPointToCanvas(point, width, height) {
+  return {
+    x: (width / 2) + (point.x * LOCAL_VIEW_SCALE),
+    y: (height / 2) - (point.y * LOCAL_VIEW_SCALE)
+  };
+}
+
+function drawRectZone(ctx, width, height, zone, fillStyle, strokeStyle, lineWidth = 1.2) {
+  const topLeft = localPointToCanvas({x: zone.minX, y: zone.maxY}, width, height);
+  const bottomRight = localPointToCanvas({x: zone.maxX, y: zone.minY}, width, height);
+  const rectWidth = bottomRight.x - topLeft.x;
+  const rectHeight = bottomRight.y - topLeft.y;
+  ctx.fillStyle = fillStyle;
+  ctx.strokeStyle = strokeStyle;
+  ctx.lineWidth = lineWidth;
+  ctx.fillRect(topLeft.x, topLeft.y, rectWidth, rectHeight);
+  ctx.strokeRect(topLeft.x, topLeft.y, rectWidth, rectHeight);
+}
+
+function drawPolygon(ctx, width, height, points, fillStyle, strokeStyle, lineWidth = 1.5) {
+  if (!points.length) return;
+  ctx.beginPath();
+  points.forEach((point, index) => {
+    const canvasPoint = localPointToCanvas(point, width, height);
+    if (index === 0) ctx.moveTo(canvasPoint.x, canvasPoint.y);
+    else ctx.lineTo(canvasPoint.x, canvasPoint.y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = fillStyle;
+  ctx.strokeStyle = strokeStyle;
+  ctx.lineWidth = lineWidth;
+  ctx.fill();
+  ctx.stroke();
+}
+
+function drawGrid(ctx, width, height) {
+  const centerX = width / 2;
+  const centerY = height / 2;
+  ctx.strokeStyle = "rgba(255,255,255,0.08)";
+  ctx.lineWidth = 1;
+
+  for (let x = centerX; x <= width; x += LOCAL_VIEW_SCALE) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.stroke();
+  }
+  for (let x = centerX - LOCAL_VIEW_SCALE; x >= 0; x -= LOCAL_VIEW_SCALE) {
+    ctx.beginPath();
+    ctx.moveTo(x, 0);
+    ctx.lineTo(x, height);
+    ctx.stroke();
+  }
+  for (let y = centerY; y <= height; y += LOCAL_VIEW_SCALE) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(width, y);
+    ctx.stroke();
+  }
+  for (let y = centerY - LOCAL_VIEW_SCALE; y >= 0; y -= LOCAL_VIEW_SCALE) {
+    ctx.beginPath();
+    ctx.moveTo(0, y);
+    ctx.lineTo(width, y);
+    ctx.stroke();
+  }
+
+  ctx.strokeStyle = "rgba(255,255,255,0.22)";
+  ctx.beginPath();
+  ctx.moveTo(centerX, 0);
+  ctx.lineTo(centerX, height);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(0, centerY);
+  ctx.lineTo(width, centerY);
+  ctx.stroke();
+}
+
+function drawLocalNav() {
+  const canvas = $("local-nav-canvas");
+  const ctx = canvas.getContext("2d");
+  const {width, height} = canvas;
+  ctx.clearRect(0, 0, width, height);
+  drawGrid(ctx, width, height);
+
+  drawRectZone(ctx, width, height, SLOW_ZONE, "rgba(217, 119, 6, 0.13)", "rgba(245, 158, 11, 0.85)");
+  drawRectZone(ctx, width, height, STOP_ZONE, "rgba(239, 68, 68, 0.15)", "rgba(248, 113, 113, 0.95)");
+
+  if (state.dangerZone) {
+    drawRectZone(
+      ctx,
+      width,
+      height,
+      state.dangerZone,
+      "rgba(255, 45, 45, 0.14)",
+      "rgba(255, 100, 100, 0.85)"
+    );
+  }
+
+  if (state.localPlan.length > 1) {
+    ctx.strokeStyle = "rgba(255,255,255,0.92)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    state.localPlan.forEach((point, index) => {
+      const robotPoint = worldToRobotFrame(point);
+      const canvasPoint = localPointToCanvas(robotPoint, width, height);
+      if (index === 0) ctx.moveTo(canvasPoint.x, canvasPoint.y);
+      else ctx.lineTo(canvasPoint.x, canvasPoint.y);
+    });
+    ctx.stroke();
+  }
+
+  state.clusterBoxes.forEach((box) => {
+    drawRectZone(
+      ctx,
+      width,
+      height,
+      box,
+      box.danger ? "rgba(255, 80, 80, 0.26)" : "rgba(56, 189, 248, 0.18)",
+      box.danger ? "rgba(255, 120, 120, 0.95)" : "rgba(125, 211, 252, 0.95)"
+    );
+  });
+
+  drawPolygon(
+    ctx,
+    width,
+    height,
+    ROBOT_FOOTPRINT,
+    "rgba(34, 197, 94, 0.18)",
+    "rgba(74, 222, 128, 0.95)"
+  );
+
+  const roverNose = localPointToCanvas({x: 0.22, y: 0}, width, height);
+  const roverTailLeft = localPointToCanvas({x: -0.10, y: 0.10}, width, height);
+  const roverTailRight = localPointToCanvas({x: -0.10, y: -0.10}, width, height);
+  ctx.beginPath();
+  ctx.moveTo(roverNose.x, roverNose.y);
+  ctx.lineTo(roverTailLeft.x, roverTailLeft.y);
+  ctx.lineTo(roverTailRight.x, roverTailRight.y);
+  ctx.closePath();
+  ctx.fillStyle = "#ffffff";
+  ctx.fill();
+  ctx.strokeStyle = "#111111";
+  ctx.lineWidth = 1.6;
+  ctx.stroke();
+
+  const forwardLabel = localPointToCanvas({x: 1.05, y: 0}, width, height);
+  ctx.fillStyle = "rgba(255,255,255,0.72)";
+  ctx.font = "12px Helvetica";
+  ctx.fillText("forward", forwardLabel.x, forwardLabel.y - 8);
+  ctx.beginPath();
+  ctx.moveTo(width / 2, height / 2);
+  ctx.lineTo(forwardLabel.x - 16, forwardLabel.y - 12);
+  ctx.strokeStyle = "rgba(255,255,255,0.25)";
+  ctx.lineWidth = 1;
+  ctx.stroke();
+}
+
+function rememberMarkerGeometry(markers) {
+  state.clusterBoxes = [];
+  state.dangerZone = null;
+
+  markers.forEach((marker) => {
+    if (marker.action === 3) return;
+    if (marker.ns === "danger_zone") {
+      state.dangerZone = {
+        minX: marker.pose.position.x - (marker.scale.x / 2),
+        maxX: marker.pose.position.x + (marker.scale.x / 2),
+        minY: marker.pose.position.y - (marker.scale.y / 2),
+        maxY: marker.pose.position.y + (marker.scale.y / 2)
+      };
+      return;
+    }
+    if (marker.ns !== "clusters") return;
+
+    state.clusterBoxes.push({
+      minX: marker.pose.position.x - (marker.scale.x / 2),
+      maxX: marker.pose.position.x + (marker.scale.x / 2),
+      minY: marker.pose.position.y - (marker.scale.y / 2),
+      maxY: marker.pose.position.y + (marker.scale.y / 2),
+      danger: marker.color.r > marker.color.g
+    });
+  });
+
+  if (state.clusterBoxes.length > 36) {
+    state.clusterBoxes = state.clusterBoxes.slice(0, 36);
+  }
+}
+
+function subscribeTopic(topicName, messageType, callback) {
+  if (!ros || !window.ROSLIB) return null;
+  const topic = new window.ROSLIB.Topic({
+    ros,
+    name: topicName,
+    messageType
+  });
+  topic.subscribe((message) => {
+    trackRate(topicName);
+    callback(message);
+  });
+  return topic;
+}
+
+function connectRos() {
+  if (!window.ROSLIB) {
+    setPill($("ros-pill"), $("ros-pill-text"), "ROSLIB not loaded", "danger");
+    return;
+  }
+
+  $("rosbridge-target").textContent = ROSBRIDGE_URL;
+  $("camera-target").textContent = `camera: ${CONFIG.cameraTopic} via ${CONFIG.cameraCompressedTopic}`;
+
+  ros = new window.ROSLIB.Ros({url: ROSBRIDGE_URL});
+
+  ros.on("connection", () => {
+    state.connected = true;
+    setPill($("ros-pill"), $("ros-pill-text"), "ROS bridge online", "online");
+    updateUi();
+  });
+
+  ros.on("close", () => {
+    state.connected = false;
+    setPill($("ros-pill"), $("ros-pill-text"), "ROS bridge offline", "warn");
+    updateUi();
+  });
+
+  ros.on("error", () => {
+    state.connected = false;
+    setPill($("ros-pill"), $("ros-pill-text"), "ROS bridge error", "danger");
+    updateUi();
+  });
+
+  teleopPublisher = new window.ROSLIB.Topic({
+    ros,
+    name: CONFIG.teleopTopic,
+    messageType: "geometry_msgs/msg/Twist"
+  });
+
+  const gasTopic = new window.ROSLIB.Topic({
+    ros,
+    name: "/gas_raw",
+    messageType: "std_msgs/msg/Int32"
+  });
+
+  gasTopic.subscribe((message) => {
+    trackRate("/gas_raw");
+    state.gasRaw = message.data;
+    document.getElementById("gas_val").textContent = message.data;
+    document.getElementById("gas-log").textContent = message.data;
+    document.getElementById("gas_status").textContent = message.data > 500 ? "gas high" : "gas normal";
+    document.getElementById("gas_status").className = (message.data > 500) ? "metric-foot value offline" : "metric-foot value online";
+  });
+
+  subscribeTopic("/odom", "nav_msgs/msg/Odometry", (msg) => {
+    state.pose.x = msg.pose.pose.position.x;
+    state.pose.y = msg.pose.pose.position.y;
+    state.pose.yawDeg = toDegreesFromQuaternion(msg.pose.pose.orientation);
+  });
+
+  subscribeTopic("/cmd_vel", "geometry_msgs/msg/Twist", (msg) => {
+    state.cmd.linear = msg.linear.x;
+    state.cmd.angular = msg.angular.z;
+    state.lastMessages.final = Date.now();
+  });
+
+  subscribeTopic("/cmd_vel_nav", "geometry_msgs/msg/Twist", () => {
+    state.lastMessages.nav = Date.now();
+  });
+
+  subscribeTopic("/cmd_vel_avoid", "geometry_msgs/msg/Twist", () => {
+    state.lastMessages.avoid = Date.now();
+  });
+
+  subscribeTopic("/cmd_vel_teleop", "geometry_msgs/msg/Twist", () => {
+    state.lastMessages.teleop = Date.now();
+  });
+
+  subscribeTopic("/plan", "nav_msgs/msg/Path", (msg) => {
+    state.planPoses = msg.poses.length;
+    if (msg.poses.length > 0) {
+      const lastPose = msg.poses[msg.poses.length - 1].pose.position;
+      state.goalDistance = Math.hypot(lastPose.x - state.pose.x, lastPose.y - state.pose.y);
+    } else {
+      state.goalDistance = null;
+    }
+  });
+
+  subscribeTopic("/local_plan", "nav_msgs/msg/Path", (msg) => {
+    state.localPlanPoses = msg.poses.length;
+    state.localPlan = msg.poses.map((poseStamped) => ({
+      x: poseStamped.pose.position.x,
+      y: poseStamped.pose.position.y
+    }));
+  });
+
+  subscribeTopic("/obstacle_markers", "visualization_msgs/msg/MarkerArray", (msg) => {
+    state.obstacleMarkers = msg.markers.filter((marker) => marker.ns !== "danger_zone").length;
+    rememberMarkerGeometry(msg.markers);
+  });
+
+  [
+    ["/unilidar/cloud", "sensor_msgs/msg/PointCloud2"],
+    ["/unilidar/cloud_restamped", "sensor_msgs/msg/PointCloud2"],
+    ["/unilidar/imu", "sensor_msgs/msg/Imu"],
+    ["/unilidar/imu_restamped", "sensor_msgs/msg/Imu"],
+    ["/filtered_obstacles", "sensor_msgs/msg/PointCloud2"],
+    ["/tf", "tf2_msgs/msg/TFMessage"],
+    ["/tf_static", "tf2_msgs/msg/TFMessage"],
+    ["/navigate_to_pose/_action/status", "action_msgs/msg/GoalStatusArray"],
+    ["/camera_info", "sensor_msgs/msg/CameraInfo"]
+  ].forEach(([topicName, messageType]) => {
+    subscribeTopic(topicName, messageType, () => {});
+  });
+
+  subscribeTopic(CONFIG.cameraCompressedTopic, "sensor_msgs/msg/CompressedImage", (msg) => {
+    const feed = $("camera-feed");
+    const empty = $("camera-empty");
+    if (!msg.data) return;
+    feed.src = `data:image/jpeg;base64,${msg.data}`;
+    state.cameraOnline = true;
+    empty.style.display = "none";
+    setPill($("camera-pill"), $("camera-pill-text"), "Camera live", "online");
+    $("camera-chip").textContent = "Live via rosbridge";
+  });
+}
+
+function publishTeleop(linear, angular) {
+  if (!teleopPublisher || !state.connected) return;
+  teleopPublisher.publish(new window.ROSLIB.Message({
+    linear: {x: linear, y: 0, z: 0},
+    angular: {x: 0, y: 0, z: angular}
+  }));
+}
+
+function stopPublishingLoop() {
+  if (publishTimer) {
+    clearInterval(publishTimer);
+    publishTimer = null;
+  }
+  activeControl = null;
+  document.querySelectorAll(".control-btn").forEach((btn) => btn.classList.remove("active"));
+  publishTeleop(0, 0);
+}
+
+function startControlLoop(controlName) {
+  stopPublishingLoop();
+  activeControl = controlName;
+  const button = document.querySelector(`[data-control="${controlName}"]`);
+  if (button) button.classList.add("active");
+  if (controlName === "stop") {
+    activeControl = null;
+    publishTeleop(0, 0);
+    return;
+  }
+
+  const publishCurrent = () => {
+    const {linear, angular} = getControlCommand(controlName);
+    publishTeleop(linear, angular);
+  };
+
+  publishCurrent();
+  publishTimer = setInterval(publishCurrent, 120);
+}
+
+function setupControls() {
+  document.querySelectorAll(".nav-item").forEach((item) => {
+    item.addEventListener("click", () => {
+      const tab = item.dataset.tab;
+      document.querySelectorAll(".nav-item").forEach((navItem) => navItem.classList.toggle("active", navItem === item));
+      document.querySelectorAll(".tab-page").forEach((page) => page.classList.toggle("active", page.id === `tab-${tab}`));
+      $("view-title").textContent = VIEW_META[tab].title;
+      $("view-subtitle").textContent = VIEW_META[tab].subtitle;
+    });
+  });
+
+  document.querySelectorAll(".control-btn").forEach((button) => {
+    const controlName = button.dataset.control;
+    if (controlName === "stop") {
+      button.addEventListener("click", () => stopPublishingLoop());
+      return;
+    }
+    ["mousedown", "touchstart"].forEach((eventName) => {
+      button.addEventListener(eventName, (event) => {
+        event.preventDefault();
+        startControlLoop(controlName);
+      });
+    });
+    ["mouseup", "mouseleave", "touchend", "touchcancel"].forEach((eventName) => {
+      button.addEventListener(eventName, stopPublishingLoop);
+    });
+  });
+
+  $("throttle-slider").addEventListener("input", (event) => {
+    setTeleopLinear(parseFloat(event.target.value));
+  });
+
+  $("angular-down").addEventListener("click", () => {
+    setTeleopAngular(CONFIG.maxAngular - TELEOP_LIMITS.angularStep);
+  });
+
+  $("angular-up").addEventListener("click", () => {
+    setTeleopAngular(CONFIG.maxAngular + TELEOP_LIMITS.angularStep);
+  });
+
+  $("angular-reset").addEventListener("click", () => {
+    setTeleopAngular(TELEOP_LIMITS.angularDefault);
+  });
+
+  const keyMap = {
+    KeyW: "forward",
+    ArrowUp: "forward",
+    KeyS: "backward",
+    ArrowDown: "backward",
+    KeyA: "left",
+    ArrowLeft: "left",
+    KeyD: "right",
+    ArrowRight: "right",
+    Space: "stop"
+  };
+
+  window.addEventListener("keydown", (event) => {
+    const controlName = keyMap[event.code];
+    if (!controlName || event.repeat) return;
+    if (controlName === "stop") stopPublishingLoop();
+    else startControlLoop(controlName);
+  });
+
+  window.addEventListener("keyup", (event) => {
+    if (keyMap[event.code]) stopPublishingLoop();
+  });
+}
+
+function setupCamera() {
+  const feed = $("camera-feed");
+  const empty = $("camera-empty");
+  $("camera-topic-chip").textContent = `${CONFIG.cameraTopic} -> ${CONFIG.cameraCompressedTopic}`;
+
+  feed.addEventListener("load", () => {
+    state.cameraOnline = true;
+    empty.style.display = "none";
+    setPill($("camera-pill"), $("camera-pill-text"), "Camera live", "online");
+    $("camera-chip").textContent = "Live stream";
+  });
+
+  feed.addEventListener("error", () => {
+    state.cameraOnline = false;
+    empty.style.display = "flex";
+    setPill($("camera-pill"), $("camera-pill-text"), "Camera waiting", "warn");
+    $("camera-chip").textContent = "No stream";
+  });
+}
+
+function loop() {
+  updateModeFromTimestamps();
+  updateUi();
+  drawLocalNav();
+}
+
+setupControls();
+setupCamera();
+connectRos();
+updateTeleopIndicators();
+updateUi();
+drawLocalNav();
+setInterval(refreshTopicRates, 1000);
+setInterval(loop, 180);
+</script>
+</body>
+</html>

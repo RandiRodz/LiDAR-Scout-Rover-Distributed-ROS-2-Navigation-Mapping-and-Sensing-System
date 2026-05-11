@@ -1,0 +1,33 @@
+/**:
+  ros__parameters:
+    cloud_topic: /unilidar/cloud
+    imu_topic: /unilidar/imu
+    output_topic: /nav2_obstacles_360
+    marker_topic: /nav2_obstacle_markers
+    output_frame_id: base_link
+    sensor_offset_x: 0.0
+    sensor_offset_y: 0.0
+    sensor_offset_z: 0.124
+
+    use_imu_axis_hint: false
+    imu_timeout_sec: 0.25
+    publish_markers: true
+
+    leaf_size: 0.08
+    roi_x_min: -3.0
+    roi_x_max: 3.0
+    roi_y_min: -3.0
+    roi_y_max: 3.0
+    roi_z_min: -1.5
+    roi_z_max: 0.30
+
+    plane_distance_threshold: 0.08
+    plane_angle_tolerance_deg: 20.0
+    plane_max_iterations: 150
+
+    cluster_tolerance: 0.18
+    min_cluster_size: 6
+    max_cluster_size: 5000
+
+    verbose_diagnostics: true
+    diagnostics_period_ms: 1000
