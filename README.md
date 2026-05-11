@@ -74,18 +74,15 @@ This is the version that tested best as a complete software path in the rover pr
 
 ## Repository Layout
 
-- `arduino/`
+- `MEGA/`
   Arduino Mega motor and gas sensor code
-- `pi5/`
+- `PI 5/`
   Raspberry Pi bridge and robot-side scripts
 - `point_cloud_processing/`
   point cloud processing package history and references
-- `lsr_description_v1/`
-  robot description, URDF/Xacro, and visualization assets
 - `docs/`
   diagrams, defense notes, tuning guides, papers, and architecture writeups
-- `staging/`
-  workspace staging area used while developing and patching V2/V3
+
 
 ## Main V3 Files
 
@@ -161,6 +158,4 @@ The main working autonomy path is the live V3 navigation and mapping configurati
 Randy Rodriguez  
 LiDAR Scout Rover software architecture, ROS 2 integration, navigation, mapping, sensing, and system bringup
 
-## License
 
-Distributed under the GNU-GPL License. See `LICENSE` for more information.
