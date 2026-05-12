@@ -1,10 +1,21 @@
 # LiDAR-Scout-Rover-Distributed-ROS-2-Navigation-Mapping-and-Sensing-System
 
-Software repository for a distributed ROS 2 rover system built around 3D LiDAR, gas sensing, and autonomous navigation.
+Software repository for a distributed ROS 2 rover system built around Unitree LiDAR L1, gas sensing, and autonomous navigation.
 
 
+##POINT-LIO UHCL BAYOU 
+<img width="800" height="450" alt="ezgif com-video-to-gif-converter(1)" src="https://github.com/user-attachments/assets/a9d678ab-add3-49fb-ae8e-0d421267d65e" />
+
+##POINT-LIO UHCL DELTA
+<img width="800" height="450" alt="ezgif com-video-to-gif-converter(2)" src="https://github.com/user-attachments/assets/2aab6bdd-c61d-4232-a197-d264dd5c98e4" />
+
+##NAV2 V2
+<img width="800" height="450" alt="ezgif com-video-to-gif-converter(3)" src="https://github.com/user-attachments/assets/883cee8c-5236-4894-9ea9-8c49a6e4c2e1" />
+
+##NAV2 V3
 
 
+##GAS SENSORS
 
 
 This repository focuses on the rover software stack only:
