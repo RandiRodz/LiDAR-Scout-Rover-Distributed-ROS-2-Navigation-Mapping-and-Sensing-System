@@ -11,7 +11,6 @@ This repository focuses on the rover software stack only:
 
 
 ## Overview
-<img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/85719687-1e01-47b6-9df6-9bb7ac7e8307" />
 
 LiDAR Scout Rover is a multi-computer robotics system designed to:
 - drive a tank-style rover with ROS 2 velocity commands
@@ -31,6 +30,7 @@ The software is split across three compute layers:
 ## Current Working Version
 
 The current working version in this repository is **Version 3**.
+<img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/85719687-1e01-47b6-9df6-9bb7ac7e8307" />
 
 Version 3 uses:
 - native Point-LIO local odometry behavior
@@ -143,11 +143,9 @@ Detailed project documentation is kept under `docs/`.
 
 Useful starting points:
 
-- `docs/presentation/v3_nav2_code_and_tuning_guide.txt`
-- `docs/repository_handoff/development_process_detailed.txt`
-- `docs/repository_handoff/code_explanation_broad.txt`
-- `docs/presentation/rover_nav2_v3_flow.png`
-- `docs/presentation/rover_nav2_all_versions_flow.png`
+
+- `DOCS/rover_nav2_v3_flow.png`
+- `DOCS/rover_nav2_all_versions_flow.png`
 
 ## Current Status
 
