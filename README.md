@@ -60,6 +60,8 @@ This is the version that tested best as a complete software path in the rover pr
 
 ## Software Architecture
 
+<img width="3487" height="793" alt="lidar_scout_rover_software_pipeline" src="https://github.com/user-attachments/assets/02090874-12c2-4236-9ecf-acea006e8d97" />
+
 
 ### Embedded layer
 - Arduino receives motor commands over serial
