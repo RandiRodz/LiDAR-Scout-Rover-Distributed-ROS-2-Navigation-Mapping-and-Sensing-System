@@ -2,7 +2,9 @@
 
 Software repository for a distributed ROS 2 rover system built around 3D LiDAR, gas sensing, and autonomous navigation.
 
-<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
+
+<img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/88ba29a6-f3ba-4a8d-8e1b-65f4f3cd8ec2" />
+
 
 This repository focuses on the rover software stack only:
 - Arduino Mega motor and gas sensor code
@@ -24,7 +26,7 @@ The software is split across three compute layers:
 - `Arduino Mega`
   low-level motor control and gas sensor sampling
 - `Raspberry Pi 5`
-  LiDAR publishing, IMU publishing, serial bridge to the Arduino
+  LiDAR publishing, IMU publishing, serial bridge to the Arduino, Cammera publishing
 - `Workstation / Intel NUC / laptop`
   Point-LIO, Nav2, obstacle processing, RViz, and the main autonomy stack
 
@@ -47,6 +49,7 @@ This is the version that tested best as a complete software path in the rover pr
 
 ## Software Architecture
 
+
 ### Embedded layer
 - Arduino receives motor commands over serial
 - Arduino controls two DC motors through the motor driver shield
@@ -58,6 +61,9 @@ This is the version that tested best as a complete software path in the rover pr
   - `/unilidar/cloud`
   - `/unilidar/imu`
 - Pi bridges `/cmd_vel` to the Arduino motor serial protocol
+- Pi runs the Cammera node
+- Pi publishes:
+  - `/image_raw`
 
 ### Workstation autonomy layer
 
@@ -112,6 +118,8 @@ Important supporting files:
 - `staging/ws_lsr_nav2_v2/src/lsr_nav2/src/lidar_retimestamp_bridge.cpp`
 
 ## How To Run The Current Working V3 Stack
+
+<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
 
 ### 1. Start the LiDAR driver on the Pi
 
