@@ -68,7 +68,7 @@ This is the version that tested best as a complete software path in the rover pr
 
 ### Workstation autonomy layer
 
-<img width="2035" height="1130" alt="rover_nav2_all_versions_flow" src="https://github.com/user-attachments/assets/15f39837-585e-40c9-92c0-8235dde3a5a2" />
+<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
 
 - Point-LIO provides the local motion estimate
 - custom bridges normalize odometry and TF for Nav2
@@ -120,7 +120,7 @@ Important supporting files:
 
 ## How To Run The Current Working V3 Stack
 
-<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
+<img width="2035" height="1130" alt="rover_nav2_all_versions_flow" src="https://github.com/user-attachments/assets/15f39837-585e-40c9-92c0-8235dde3a5a2" />
 
 ### 1. Start the LiDAR driver on the Pi
 
