@@ -72,7 +72,7 @@ This is the version that tested best as a complete software path in the rover pr
   - `/unilidar/cloud`
   - `/unilidar/imu`
 - Pi bridges `/cmd_vel` to the Arduino motor serial protocol
-- Pi runs the Cammera node
+- Pi runs the Camera node
 - Pi publishes:
   - `/image_raw`
 
@@ -140,8 +140,14 @@ Important supporting files:
 source /opt/ros/jazzy/setup.bash
 ros2 launch unitree_lidar_ros2 launch.py
 ```
+### 2. Start Point-LIO
 
-### 2. Start the workstation autonomy stack
+```bash
+cd ws_pointlio
+source ~/ws_pointlio/install/setup.bash
+ros2 launch point_lio mapping_unilidar_l1.launch.py rviz:=false
+```
+### 3. Start the workstation autonomy stack
 
 ```bash
 source /opt/ros/jazzy/setup.bash
@@ -150,12 +156,21 @@ source /home/ros2/ws_lsr_nav2_v2/install/setup.bash
 ros2 launch point_cloud_processing rover_nav2_v3.launch.py
 ```
 
-### 3. Optional keyboard teleop
+### 4. Optional keyboard teleop
 
 ```bash
 source /opt/ros/jazzy/setup.bash
 source /home/ros2/ws_lsr_nav2_v2/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/cmd_vel_teleop
+```
+
+### 5. Optional Camera
+
+```bash
+ros2 run v4l2_camera v4l2_camera_node --ros-args \
+-p video_device:="/dev/video0" \
+-p image_size:="[640,480]" \
+-p output_encoding:="rgb8"
 ```
 
 ## What V3 Improves
