@@ -185,16 +185,6 @@ Compared with earlier rover software branches, V3 improves:
 - local control tuning for a tank-drive platform
 - separation between raw LiDAR data, filtered obstacle data, and navigation control
 
-## Documentation
-
-Detailed project documentation is kept under `docs/`.
-
-Useful starting points:
-
-
-- `DOCS/rover_nav2_v3_flow.png`
-- `DOCS/rover_nav2_all_versions_flow.png`
-
 ## Current Status
 
 This repository reflects the rover software as developed and tested during the project.
