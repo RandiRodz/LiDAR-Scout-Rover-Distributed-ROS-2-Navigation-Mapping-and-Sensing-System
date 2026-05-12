@@ -3,7 +3,8 @@
 Software repository for a distributed ROS 2 rover system built around 3D LiDAR, gas sensing, and autonomous navigation.
 
 
-<img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/88ba29a6-f3ba-4a8d-8e1b-65f4f3cd8ec2" />
+
+
 
 
 This repository focuses on the rover software stack only:
