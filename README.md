@@ -23,7 +23,10 @@ The software is split across three compute layers:
 - `Workstation / Intel NUC / laptop`
   Point-LIO, Nav2, obstacle processing, RViz, and the main autonomy stack
 
-  
+ ## DEMO Videos
+
+[![YouTube](https://shields.io)](https://www.youtube.com/channel/UCsQoXkuwZl-ijHmh91t0s0w)
+
 ## POINT-LIO UHCL BAYOU 
 
 <img width="800" height="450" alt="ezgif com-video-to-gif-converter(1)" src="https://github.com/user-attachments/assets/a9d678ab-add3-49fb-ae8e-0d421267d65e" />
@@ -190,10 +193,6 @@ Compared with earlier rover software branches, V3 improves:
 This repository reflects the rover software as developed and tested during the project.
 
 The main working autonomy path is the live V3 navigation and mapping configuration. Some experimental follow-on work, such as saved-map localization refinements, is still under development and should be treated as secondary to the main V3 flow above.
-
-## DEMO Videos
-
-[![YouTube](https://shields.io)](https://www.youtube.com/channel/UCsQoXkuwZl-ijHmh91t0s0w)
 
 
 ## Author
