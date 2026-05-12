@@ -2,11 +2,12 @@
 
 Software repository for a distributed ROS 2 rover system built around 3D LiDAR, gas sensing, and autonomous navigation.
 
+<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
+
 This repository focuses on the rover software stack only:
 - Arduino Mega motor and gas sensor code
 - Raspberry Pi 5 bridge and sensor-side scripts
 - ROS 2 Jazzy workstation navigation, mapping, and visualization stack
-<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
   
 
 
@@ -30,10 +31,14 @@ The software is split across three compute layers:
 ## Current Working Version
 
 The current working version in this repository is **Version 3**.
+
 <img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/85719687-1e01-47b6-9df6-9bb7ac7e8307" />
 
 Version 3 uses:
 - native Point-LIO local odometry behavior
+
+  <img width="803" height="365" alt="DELTA OUTSIDE POINT LIO" src="https://github.com/user-attachments/assets/aba30db1-66b8-4617-a7da-83828b8a5dfe" />
+
 - `slam_toolbox` map correction during live operation
 - a 360-degree point-cloud obstacle pipeline for Nav2
 - tank-drive tuned Nav2 control parameters
@@ -55,6 +60,9 @@ This is the version that tested best as a complete software path in the rover pr
 - Pi bridges `/cmd_vel` to the Arduino motor serial protocol
 
 ### Workstation autonomy layer
+
+<img width="2035" height="1130" alt="rover_nav2_all_versions_flow" src="https://github.com/user-attachments/assets/15f39837-585e-40c9-92c0-8235dde3a5a2" />
+
 - Point-LIO provides the local motion estimate
 - custom bridges normalize odometry and TF for Nav2
 - point-cloud processing nodes generate:
@@ -130,6 +138,8 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/cm
 ```
 
 ## What V3 Improves
+
+<img width="3287" height="1047" alt="rover_nav2_v3_flow" src="https://github.com/user-attachments/assets/1b7cfa54-c953-4fc2-984c-f589c9932b48" />
 
 Compared with earlier rover software branches, V3 improves:
 - obstacle awareness around the full rover body
