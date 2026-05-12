@@ -127,18 +127,18 @@ This is the version that tested best as a complete software path in the rover pr
 
 The Version 3 stack is centered around these files:
 
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/launch/rover_nav2_v3.launch.py`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/config/nav2_v3_params.yaml`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/config/slam_toolbox_v3_online_async.yaml`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/rviz/rover_nav2_v3_view.rviz`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/launch/rover_nav2_v3.launch.py`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/config/nav2_v3_params.yaml`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/config/slam_toolbox_v3_online_async.yaml`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/rviz/rover_nav2_v3_view.rviz`
 
 Important supporting files:
 
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/src/nav2_obstacle_cloud.cpp`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/src/advanced_proximity_guard.cpp`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/src/cmd_vel_mux.cpp`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/src/odom_retimestamp_bridge.cpp`
-- `staging/ws_lsr_nav2_v2/src/lsr_nav2/src/lidar_retimestamp_bridge.cpp`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/src/nav2_obstacle_cloud.cpp`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/src/advanced_proximity_guard.cpp`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/src/cmd_vel_mux.cpp`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/src/odom_retimestamp_bridge.cpp`
+- `staging/ws_lsr_nav2_v3/src/lsr_nav2/src/lidar_retimestamp_bridge.cpp`
 
 ## How To Run The Current Working V3 Stack
 
@@ -162,7 +162,7 @@ ros2 launch point_lio mapping_unilidar_l1.launch.py rviz:=false
 ```bash
 source /opt/ros/jazzy/setup.bash
 source /home/ros2/ws_pointlio/install/setup.bash
-source /home/ros2/ws_lsr_nav2_v2/install/setup.bash
+source /home/ros2/ws_lsr_nav2_v3/install/setup.bash
 ros2 launch point_cloud_processing rover_nav2_v3.launch.py
 ```
 
@@ -170,7 +170,7 @@ ros2 launch point_cloud_processing rover_nav2_v3.launch.py
 
 ```bash
 source /opt/ros/jazzy/setup.bash
-source /home/ros2/ws_lsr_nav2_v2/install/setup.bash
+source /home/ros2/ws_lsr_nav2_v3/install/setup.bash
 ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/cmd_vel_teleop
 ```
 
