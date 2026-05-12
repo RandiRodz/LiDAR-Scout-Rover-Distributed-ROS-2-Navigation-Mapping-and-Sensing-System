@@ -38,6 +38,7 @@ The software is split across three compute layers:
 
 ## NAV2 V3
 
+<img width="800" height="450" alt="ezgif com-video-to-gif-converter(5)" src="https://github.com/user-attachments/assets/2d466143-c165-4855-b4a9-49adb898744a" />
 
 ## GAS SENSORS
 
@@ -51,9 +52,6 @@ The current working version in this repository is **NAV 2 Version 3**.
 
 Version 3 uses:
 - native Point-LIO local odometry behavior
-
-  <img width="803" height="365" alt="DELTA OUTSIDE POINT LIO" src="https://github.com/user-attachments/assets/aba30db1-66b8-4617-a7da-83828b8a5dfe" />
-
 - `slam_toolbox` map correction during live operation
 - a 360-degree point-cloud obstacle pipeline for Nav2
 - tank-drive tuned Nav2 control parameters
@@ -80,7 +78,9 @@ This is the version that tested best as a complete software path in the rover pr
 
 ### Workstation autonomy layer
 
+
 <img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
+
 
 - Point-LIO provides the local motion estimate
 - custom bridges normalize odometry and TF for Nav2
@@ -188,5 +188,7 @@ The main working autonomy path is the live V3 navigation and mapping configurati
 
 Randy Rodriguez  
 LiDAR Scout Rover software architecture, ROS 2 integration, navigation, mapping, sensing, and system bringup
+  <img width="803" height="365" alt="DELTA OUTSIDE POINT LIO" src="https://github.com/user-attachments/assets/aba30db1-66b8-4617-a7da-83828b8a5dfe" />
+
 
 
