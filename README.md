@@ -120,7 +120,7 @@ Important supporting files:
 
 ## How To Run The Current Working V3 Stack
 
-<img width="2035" height="1130" alt="rover_nav2_all_versions_flow" src="https://github.com/user-attachments/assets/15f39837-585e-40c9-92c0-8235dde3a5a2" />
+<img width="3287" height="1047" alt="rover_nav2_v3_flow" src="https://github.com/user-attachments/assets/1b7cfa54-c953-4fc2-984c-f589c9932b48" />
 
 ### 1. Start the LiDAR driver on the Pi
 
@@ -148,7 +148,7 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard --ros-args -r /cmd_vel:=/cm
 
 ## What V3 Improves
 
-<img width="3287" height="1047" alt="rover_nav2_v3_flow" src="https://github.com/user-attachments/assets/1b7cfa54-c953-4fc2-984c-f589c9932b48" />
+<img width="2035" height="1130" alt="rover_nav2_all_versions_flow" src="https://github.com/user-attachments/assets/15f39837-585e-40c9-92c0-8235dde3a5a2" />
 
 Compared with earlier rover software branches, V3 improves:
 - obstacle awareness around the full rover body
