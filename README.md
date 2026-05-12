@@ -41,6 +41,8 @@ The software is split across three compute layers:
 
 ## GAS SENSORS
 
+<img width="800" height="450" alt="ezgif com-video-to-gif-converter(4)" src="https://github.com/user-attachments/assets/a5b07722-dcce-43e2-8cfb-47f8dfe89325" />
+
 ## Current Working Version
 
 The current working version in this repository is **NAV 2 Version 3**.
