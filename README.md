@@ -191,6 +191,11 @@ This repository reflects the rover software as developed and tested during the p
 
 The main working autonomy path is the live V3 navigation and mapping configuration. Some experimental follow-on work, such as saved-map localization refinements, is still under development and should be treated as secondary to the main V3 flow above.
 
+## DEMO Videos
+
+[![YouTube](https://shields.io)](https://www.youtube.com/channel/UCsQoXkuwZl-ijHmh91t0s0w)
+
+
 ## Author
 
 Randy Rodriguez  
