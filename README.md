@@ -6,6 +6,11 @@ This repository focuses on the rover software stack only:
 - Raspberry Pi 5 bridge and sensor-side scripts
 - ROS 2 Jazzy workstation navigation, mapping, and visualization stack
 
+Here is the main repository link
+[![Lidar Scout Rover](https://shields.io)](https://github.com/RandiRodz/Lidar-Scout-Rover
+)
+
+
 ## Overview
 
 LiDAR Scout Rover is a multi-computer robotics system designed to:
