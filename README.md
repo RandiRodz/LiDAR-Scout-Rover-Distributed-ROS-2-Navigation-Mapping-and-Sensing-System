@@ -193,22 +193,26 @@ Compared with earlier rover software branches, V3 improves:
   
 ## Odometry Drifting
 
-Odometry drifting is the cumulative error in a robot's estimated position and orientation (pose) over time. It is a common issue in autonomous vehicles and robotics that leads to the reported position slowly deviating from the actual observed position
+Odometry drift is the gradual accumulation of error in a robot’s estimated position and orientation over time. In mobile robotics, this causes the reported pose to slowly diverge from the rover’s true position, even when the system appears to be functioning normally.
 <img width="1872" height="1048" alt="Screenshot from 2026-05-12 23-54-44" src="https://github.com/user-attachments/assets/6f9fbc3b-e867-4fcc-8dcd-3f24413f5e29" />
-Here I is use PlotJuggler to stream and visualizes the orientation data from unilidar/imu topic. 
-
+The figure above shows IMU orientation data from the /unilidar/imu topic visualized in PlotJuggler.(Moving)
 
 <img width="1872" height="1048" alt="Screenshot from 2026-05-12 23-54-53" src="https://github.com/user-attachments/assets/3f9cc39a-a807-46f7-8a40-7dc605bb1094" />
-
-Because the LiDAR unit physically spins while the rover is stationary, mechanical vibration from the internal motor can couple directly into the built-in IMU. This introduces high-frequency oscillations in the IMU measurements, which appear as pitch and roll jitter even when the rover is not moving. Since the IMU is mounted inside the LiDAR assembly, small imbalances in the rotating mechanism can also create a persistent bias. Over time, that bias may be interpreted by the odometry or state-estimation pipeline as slow motion or rotation, which contributes to drift in yaw and instability in the estimated pose. As a result, the rover can appear to “shiver” in RViz through /odom or /tf even while physically stationary. To reduce the long-term effect of this drift, map-based correction was integrated so that localization could be periodically realigned against the environment rather than relying on odometry alone.
-
-Potential Fixes:
-
-    Damping: Use rubber vibration isolators between the LiDAR mount and the rover chassis to decouple the motor noise from the metal frame.
-
-    Zero-Velocity Updates: Configured to recognize when the rover is stationary so it can ignore the IMU drift while the wheels aren't turning.
+Even while the rover was stationary, the signals showed high-frequency oscillations and slow drift over time.(Stationary)
 
 
+
+This behavior is consistent with vibration coupling from the spinning LiDAR assembly into the built-in IMU. Because the LiDAR physically rotates during operation, mechanical vibration from the internal motor can be transferred directly into the IMU measurements. This produces high-frequency oscillations that appear as pitch and roll jitter even when the rover is not moving. Since the IMU is integrated inside the LiDAR unit, small imbalances in the rotating mechanism may also introduce a persistent bias. Over time, that bias can be interpreted by the odometry or state-estimation pipeline as slow motion or rotation, which contributes to yaw drift and instability in the estimated pose.
+
+As a result, the rover may appear to “shiver” in RViz through /odom or /tf despite remaining physically stationary. To reduce the long-term impact of this effect, map-based correction was integrated in Version 3 so that localization could be periodically realigned against the environment rather than relying only on odometry.
+
+Potential Fixes
+
+Mechanical damping: Use rubber vibration isolators between the LiDAR mount and the rover chassis to reduce the transmission of motor-induced vibration into the frame and IMU.
+
+Zero-velocity updates: Configure the state-estimation system to detect when the rover is stationary so that IMU drift can be suppressed or weighted less heavily while the wheels are not moving.
+
+Additional filtering or tuning: Tune the odometry or sensor-fusion pipeline to better reject the dominant vibration frequency and reduce the effect of IMU noise on /odom.
 
 ## Current Status
 
