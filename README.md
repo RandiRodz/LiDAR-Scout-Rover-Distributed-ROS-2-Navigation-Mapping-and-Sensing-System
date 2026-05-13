@@ -194,6 +194,13 @@ Compared with earlier rover software branches, V3 improves:
 ## Odometry Drifting
 
 Odometry drift is the gradual accumulation of error in a robot’s estimated position and orientation over time. In mobile robotics, this causes the reported pose to slowly diverge from the rover’s true position, even when the system appears to be functioning normally.
+<img width="745" height="217" alt="ezgif com-crop" src="https://github.com/user-attachments/assets/6bbb4615-04d1-43af-99ef-ebf1f774d2fc" />
+
+The GIF above shows version 2 with odometry drifting when Stationary.
+<img width="774" height="362" alt="ezgif com-crop(1)" src="https://github.com/user-attachments/assets/9183c86d-9b86-44cd-8a7a-66a8f29b39a1" />
+
+The GIF above shows version 2 with odometry drifting when Moving.
+
 <img width="1872" height="1048" alt="Screenshot from 2026-05-12 23-54-44" src="https://github.com/user-attachments/assets/6f9fbc3b-e867-4fcc-8dcd-3f24413f5e29" />
 The figure above shows IMU orientation data from the /unilidar/imu topic visualized in PlotJuggler.(Moving)
 
