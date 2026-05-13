@@ -56,7 +56,6 @@ The software is split across three compute layers:
 
 The current working version in this repository is **NAV 2 Version 3**.
 
-<img width="800" height="402" alt="ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/85719687-1e01-47b6-9df6-9bb7ac7e8307" />
 
 Version 3 uses:
 - native Point-LIO local odometry behavior
