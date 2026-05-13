@@ -117,8 +117,6 @@ This is the version that tested best as a complete software path in the rover pr
   Arduino Mega motor and gas sensor code
 - `PI 5/`
   Raspberry Pi bridge and robot-side scripts
-- `point_cloud_processing/`
-  point cloud processing package history and references
 - `docs/`
   diagrams, defense notes, tuning guides, papers, and architecture writeups
 
