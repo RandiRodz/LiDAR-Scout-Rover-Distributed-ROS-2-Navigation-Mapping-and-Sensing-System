@@ -54,7 +54,9 @@ The software is split across three compute layers:
 
 ## Current Working Version
 
-The current working version in this repository is **NAV 2 Version 3**.
+The current working version in this repository is [![**NAV 2 Version 3**](https://shields.io)](https://github.com/RandiRodz/LiDAR-Scout-Rover-Distributed-ROS-2-Navigation-Mapping-and-Sensing-System/tree/main/ws_lsr_nav2_v3
+)
+
 
 
 Version 3 uses:
