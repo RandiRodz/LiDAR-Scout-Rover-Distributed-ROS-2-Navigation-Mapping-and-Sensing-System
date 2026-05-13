@@ -89,8 +89,6 @@ This is the version that tested best as a complete software path in the rover pr
 ### Workstation autonomy layer
 
 
-<img width="986" height="894" alt="image" src="https://github.com/user-attachments/assets/557ee575-0526-453b-a64d-7f7c093e4e55" />
-
 
 - Point-LIO provides the local motion estimate
 - custom bridges normalize odometry and TF for Nav2
