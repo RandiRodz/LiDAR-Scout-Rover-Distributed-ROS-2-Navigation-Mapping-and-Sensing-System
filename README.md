@@ -116,8 +116,10 @@ This is the version that tested best as a complete software path in the rover pr
   Arduino Mega motor and gas sensor code
 - `PI 5/`
   Raspberry Pi bridge and robot-side scripts
-- `docs/`
+- `DOCS/`
   diagrams, defense notes, tuning guides, papers, and architecture writeups
+- `DOCS/metrics_logs/cpu_comparison_report.md` 
+[![cpu_comparison_report.md](https://shields.io)](https://github.com/RandiRodz/LiDAR-Scout-Rover-Distributed-ROS-2-Navigation-Mapping-and-Sensing-System/blob/main/DOCS/metrics_logs/cpu_comparison_report.md)
 
 
 ## Main V3 Files
