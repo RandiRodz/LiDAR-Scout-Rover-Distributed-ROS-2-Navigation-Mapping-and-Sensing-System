@@ -1,0 +1,9 @@
+platform,run_key,run_label,avg_cpu_percent,peak_cpu_percent,min_cpu_percent,duration_sec,sample_count,source_file
+nuc,mapping,Point-LIO Mapping + Camera,20.643,31.610,9.650,377.0,378,nuc_mapping_total_cpu.txt
+nuc,v1,Version 1,33.531,40.320,28.510,329.0,330,nuc_v1_total_cpu.txt
+nuc,v2,Version 2,32.639,40.510,23.550,392.0,393,nuc_v2_total_cpu.txt
+nuc,v3,Version 3,52.251,58.000,46.250,340.0,341,nuc_v3_total_cpu.txt
+pi5,mapping,Point-LIO Mapping + Camera,25.707,63.520,5.670,373.0,374,pi5_mapping_total_cpu.txt
+pi5,v1,Version 1,20.493,48.990,5.150,322.0,323,pi5_v1_total_cpu.txt
+pi5,v2,Version 2,20.375,52.020,4.880,322.0,323,pi5_ v2_ total_cpu.txt
+pi5,v3,Version 3,21.558,52.430,6.200,322.0,323,pi5_v3_ total_cpu.txt

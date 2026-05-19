@@ -1,0 +1,5 @@
+platform,comparison,run_key,run_label,avg_cpu_percent,peak_cpu_percent,min_cpu_percent,duration_sec,sample_count,source_file
+pi5,all,v1,Version 1,20.493,48.990,5.150,322.0,323,pi5_v1_total_cpu.txt
+pi5,all,v2,Version 2,20.375,52.020,4.880,322.0,323,pi5_ v2_ total_cpu.txt
+pi5,all,v3,Version 3,21.558,52.430,6.200,322.0,323,pi5_v3_ total_cpu.txt
+pi5,all,mapping,Point-LIO Mapping + Camera,25.707,63.520,5.670,373.0,374,pi5_mapping_total_cpu.txt

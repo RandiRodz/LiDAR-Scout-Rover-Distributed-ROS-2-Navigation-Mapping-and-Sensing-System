@@ -1,0 +1,3 @@
+platform,comparison,run_key,run_label,avg_cpu_percent,peak_cpu_percent,min_cpu_percent,duration_sec,sample_count,source_file
+nuc,v2_vs_v3,v2,Version 2,32.639,40.510,23.550,392.0,393,nuc_v2_total_cpu.txt
+nuc,v2_vs_v3,v3,Version 3,52.251,58.000,46.250,340.0,341,nuc_v3_total_cpu.txt
