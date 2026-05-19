@@ -3,7 +3,27 @@
 CPU usage was computed from `sar -u` logs using:
 
 - `CPU_active_percent = 100 - %idle`
+## Compute Platform
 
+The rover used a distributed compute architecture with onboard and workstation-side processing.
+
+### Onboard compute
+- **Device:** Raspberry Pi 5
+- **RAM:** 8 GB
+- **Operating System:** Ubuntu
+- **Kernel:** Linux 6.8.0-1048-raspi
+- **Architecture:** `aarch64`
+- **Logical CPUs:** 4
+
+### Workstation compute
+- **Device:** Intel NUC11PAHi7
+- **CPU:** 11th Gen Intel Core i7-1165G7
+- **RAM:** 24.0 GiB
+- **Operating System:** Ubuntu
+- **Kernel:** Linux 6.8.0-111-generic
+- **Architecture:** `x86_64`
+- **Logical CPUs:** 8
+  
 ## Summary Table
 
 | Platform | Run | Avg CPU (%) | Peak CPU (%) | Duration (s) | Samples |
