@@ -181,7 +181,60 @@ ros2 run v4l2_camera v4l2_camera_node --ros-args \
 -p image_size:="[640,480]" \
 -p output_encoding:="rgb8"
 ```
+### 6. Network & DDS Setup (Ethernet / Wi-Fi Router)
 
+To enable reliable, low-latency ROS 2 Jazzy node discovery across multiple devices (e.g., PC/NUC and Raspberry Pi) over a router or direct Ethernet link, CycloneDDS must be configured to bind directly to the active network interface and use static peer discovery.
+
+#### Configure DDS Environment Variables
+
+Add the following configuration to your `~/.bashrc` file on your main host system:
+
+```bash
+# Open bash configuration
+nano ~/.bashrc
+```
+
+Append these lines at the bottom:
+```bash
+
+# ==========================================
+# ROS 2 Workspace Sourcing
+# ==========================================
+source /opt/ros/jazzy/setup.bash
+source ~/point_lio_ws/install/setup.bash
+source ~/ws_lsr_nav2_v2/install/setup.bash
+
+# ==========================================
+# DDS Network Configuration
+# ==========================================
+# Domain ID isolation
+export ROS_DOMAIN_ID=17
+
+# Force CycloneDDS middleware implementation
+export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
+# Define static peer IP addresses (localhost and remote Pi IP)
+export ROS_STATIC_PEERS="127.0.0.1;192.168.0.225"
+
+# Bind CycloneDDS directly to your active Ethernet interface (replace 'enp89s0' with your interface name)
+export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces><NetworkInterface name="enp89s0"/></Interfaces></General></Domain></CycloneDDS>'
+
+# Disable automatic discovery range to restrict traffic to specified static peers
+unset ROS_AUTOMATIC_DISCOVERY_RANGE
+```
+
+Apply the changes to your current terminal session:
+```bash
+source ~/.bashrc
+```
+#### Hardware Connection Overview
+
+  Intel NUC (PC): Connects directly to the router via a high-speed Ethernet cable 
+  on interface enp89s0 for maximum processing bandwidth and point-cloud throughput.
+
+  Raspberry Pi 5: Automatically connects to the router's Wi-Fi network on boot, 
+  allowing wireless telemetry, sensor data relay, and motor control routing.
+    
 ## What V3 Improves
 
 <img width="2035" height="1130" alt="rover_nav2_all_versions_flow" src="https://github.com/user-attachments/assets/15f39837-585e-40c9-92c0-8235dde3a5a2" />
